@@ -7,8 +7,8 @@
 Value* createNewValue(float d, char *n){
 	Value *z = malloc(sizeof(Value));
 	z->data = d;
-	z->_prev[0] = NULL;
-	z->_prev[1] = NULL;
+	for(int i=0; i<2; i++)
+		z->_prev[i] = NULL;
 	z->op = ' ';
 	strncpy(z->name, n, 4);
 	z->name[5] = '\0';
@@ -106,7 +106,7 @@ NodeList* createNodeList(){
 	nodelist->size= 0;
 	nodelist->values = malloc(nodelist->cap * sizeof(Value*));
 	return nodelist;
-};
+}
 
 void append(NodeList* nodelist, Value* newValue){
 	if(nodelist->size >= nodelist->cap){
@@ -124,7 +124,7 @@ void buildTopoSort(NodeList *nodelist, Value* v){
 	for(int i=0; i<2; i++)
 		buildTopoSort(nodelist, v->_prev[i]);
 	append(nodelist, v);
-};
+}
 
 void resetVisited(NodeList* topo) {
     for (int i = 0; i < topo->size; i++)
