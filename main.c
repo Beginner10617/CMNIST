@@ -31,12 +31,13 @@ void readHeader(uint32_t* head, FILE* ptr){
 	return;
 }
 
-int readNextImage(uint32_t* img, int img_size, FILE* ptr){
+int readNextImage(uint8_t* img, int img_size, FILE* ptr){
 	if(fread(img, 1, img_size, ptr) != img_size){
+		if(feof(ptr))
+			return 0;
 		printf("Error reading images\n");
 		return 0;
 	}
-	swapInPlace(img, img_size);
 	return 1;
 }
 
@@ -50,7 +51,7 @@ int main(){
 	uint32_t header[4];
 	readHeader(header, fptr);
 	int image_size = header[2] * header[3];
-	uint32_t image[image_size];
+	uint8_t image[image_size];
 	int x=0;
 	while(readNextImage(image, image_size, fptr)){
 		x++;
