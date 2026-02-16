@@ -13,8 +13,11 @@ Value* createNewValue(float d, char *n){
 	strncpy(z->name, n, 4);
 	z->name[5] = '\0';
 	z->grad = 0;
+	z->_backward = doNothing;
 	return z;
 }
+
+void doNothing(Value *x){}
 
 Value* add(Value *x, Value *y){
 	Value *z = malloc(sizeof(Value));
@@ -23,8 +26,17 @@ Value* add(Value *x, Value *y){
         z->_prev[1] = y;
 	z->grad = 0.0f;
 	z->op = '+';
+	z->_backward = addBack;	
 	return z;
 }
+
+void addBack(Value *z){
+	Value *x = z->_prev[0];
+	Value *y = z->_prev[1];
+	x->grad += z->grad;
+	y->grad += z->grad;
+}
+
 
 Value* mul(Value *x, Value *y){
 	Value *z = malloc(sizeof(Value));
@@ -33,7 +45,15 @@ Value* mul(Value *x, Value *y){
 	z->_prev[1] = y;
 	z->grad = 0.0f;
 	z->op = '*';
+	z->_backward = mulBack;
 	return z;
+}
+
+void mulBack(Value *z){
+	Value *x = z->_prev[0];
+	Value *y = z->_prev[1];
+	x->grad += y->data * z->grad;
+	y->grad += x->data * z->grad;	
 }
 
 Value* vtanh(Value *x){
@@ -43,7 +63,13 @@ Value* vtanh(Value *x){
 	z->_prev[1] = NULL;
 	z->grad = 0.0f;
 	z->op = 't';
+	z->_backward = tanhBack;
 	return z;
+}
+
+void tanhBack(Value* z){
+	Value *x = z->_prev[0];
+	x->grad += (1 - z->data * z->data) * z->grad;
 }
 
 void print(Value *x){
