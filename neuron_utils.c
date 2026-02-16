@@ -1,4 +1,6 @@
 #include "neuron_utils.h"
+#include "stdio.h"
+#include "math.h"
 #include "stdlib.h"
 #include "string.h"
 
@@ -34,10 +36,24 @@ Value* mul(Value *x, Value *y){
 	return z;
 }
 
+Value* vtanh(Value *x){
+	Value *z = malloc(sizeof(Value));
+	z->data = tanh(x->data);
+	z->_prev[0] = x;
+	z->_prev[1] = NULL;
+	z->grad = 0.0f;
+	z->op = 't';
+	return z;
+}
+
 void print(Value *x){
 	printf("%s", x->name);
-	if(x->_prev[1] == NULL || x->_prev[0] == NULL){
+	if(x->_prev[1] == NULL && x->_prev[0] == NULL){
 		printf(" = %f\n", x->data);
+		return;
+	}
+	else if(x->_prev[1] == NULL){
+		printf(" = %f = %c(%s)\n", x->data, x->op, x->_prev[0]->name);
 		return;
 	}
 	printf(" = %f = %s %c %s\n", x->data, x->_prev[0]->name, x->op, x->_prev[1]->name);
