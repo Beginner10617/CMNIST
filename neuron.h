@@ -19,7 +19,7 @@ typedef struct {
 Neuron* createNeuron(int dim, char* name);
 
 // Evaluating neuron activation value for given inputs
-Value* evaluate(Neuron* neuron, Value** inputs);
+Value* evaluateNeuron(Neuron* neuron, Value** inputs);
 
 // Freeing allocated memory after backpropagation of non-parameter nodes
 void freeComputationTree(Value *root);

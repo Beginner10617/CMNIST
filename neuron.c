@@ -25,7 +25,7 @@ Neuron* createNeuron(int dim, char* n){
 	return neuron;
 }
 
-Value* evaluate(Neuron *neuron, Value **inputs){
+Value* evaluateNeuron(Neuron *neuron, Value **inputs){
 
 	Value* raw_act = neuron->bias;
 	int dim = neuron->dimension;
