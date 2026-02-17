@@ -14,6 +14,8 @@ struct Value{
 	Funcptr _backward;
 	// For topo-sort	
 	int visited;
+	// Fpr computation tree
+	int _isparameter;
 };
 
 // For topo-sort
@@ -36,7 +38,7 @@ Value* add(Value* x, Value* y);
 Value* mul(Value* x, Value* y);
 Value* vtanh(Value* x);
 
-void print(Value* x);
+void printv(Value* x);
 
 // For back-propagation
 void addBack(Value* x);

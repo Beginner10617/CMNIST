@@ -15,6 +15,7 @@ Value* createNewValue(float d, char *n){
 	z->grad = 0;
 	z->_backward = doNothing;
 	z->visited = 0;
+	z->_isparameter = 0;
 	return z;
 }
 
@@ -28,6 +29,7 @@ Value* add(Value *x, Value *y){
 	z->grad = 0.0f;
 	z->op = '+';
 	z->_backward = addBack;	
+	z->_isparameter = 0;
 	return z;
 }
 
@@ -47,6 +49,7 @@ Value* mul(Value *x, Value *y){
 	z->grad = 0.0f;
 	z->op = '*';
 	z->_backward = mulBack;
+	z->_isparameter = 0;
 	return z;
 }
 
@@ -65,6 +68,7 @@ Value* vtanh(Value *x){
 	z->grad = 0.0f;
 	z->op = 't';
 	z->_backward = tanhBack;
+	z->_isparameter = 0;
 	return z;
 }
 
@@ -73,7 +77,7 @@ void tanhBack(Value* z){
 	x->grad += (1 - z->data * z->data) * z->grad;
 }
 
-void print(Value *x){
+void printv(Value *x){
 	printf("%s", x->name);
 	if(x->_prev[1] == NULL && x->_prev[0] == NULL){
 		printf(" = %f\n", x->data);
