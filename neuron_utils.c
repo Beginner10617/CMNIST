@@ -97,6 +97,7 @@ void backPropagate(Value* x){
 		node->_backward(node);
 	}
 	resetVisited(topo);
+	freeNodeList(topo);
 }
 
 // For topo-sort
@@ -106,6 +107,11 @@ NodeList* createNodeList(){
 	nodelist->size= 0;
 	nodelist->values = malloc(nodelist->cap * sizeof(Value*));
 	return nodelist;
+}
+
+void freeNodeList(NodeList* nodelist){
+	free(nodelist->values);
+	free(nodelist);
 }
 
 void append(NodeList* nodelist, Value* newValue){
@@ -121,6 +127,7 @@ void append(NodeList* nodelist, Value* newValue){
 void buildTopoSort(NodeList *nodelist, Value* v){
 	if(v==NULL || v->visited>0)
 		return;
+	v->visited = 1;
 	for(int i=0; i<2; i++)
 		buildTopoSort(nodelist, v->_prev[i]);
 	append(nodelist, v);

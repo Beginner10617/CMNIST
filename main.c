@@ -1,27 +1,13 @@
-#include "neuron_utils.h"
+#include "neuron.h"
 #include "string.h"
 #include "stdio.h"
 int main(){
-	Value *a = createNewValue(5.0f, "a");
-	Value *b = createNewValue(-2.0f,"b");
-	Value *c = mul(a, b); strcpy(c->name, "c");
-	Value *e = add(c, a); strcpy(e->name, "e");
-	Value *f = vtanh(e); strcpy(f->name, "f");
-	
-	print(f);
-	print(e);
-	print(c);
-	print(b);
-	print(a);
-
-	backPropagate(f);	
-
-	printf("grad values are:\n");
-	printf("f -> %f\n", f->grad);
-	printf("e -> %f\n", e->grad);
-	printf("c -> %f\n", c->grad);
-	printf("b -> %f\n", b->grad);
-	printf("a -> %f\n", a->grad);
-	
+	srand((unsigned int)time(NULL));
+	Value **x = malloc( 2 * sizeof(Value*));
+	x[0] = createNewValue(2, "x1");
+	x[1] = createNewValue(1, "x2");
+	Neuron *neuron = createNeuron(2);
+	Value *z = evaluate(neuron, x);
+	print(z);
 	return 0;
 }

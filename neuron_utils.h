@@ -26,6 +26,7 @@ NodeList* createNodeList();
 void append(NodeList* nodelist, Value* newValue);
 void buildTopoSort(NodeList *nodelist, Value* v);
 void resetVisited(NodeList *nodelist);
+void freeNodeList(NodeList* nodelist);
 
 // Initialising a value
 Value* createNewValue(float data, char* name);
