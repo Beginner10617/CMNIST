@@ -3,7 +3,6 @@
 
 #include "neuron_utils.h"
 
-#include "time.h"
 #include "stdlib.h"
 #include "stdio.h"
 #include "string.h"
@@ -26,4 +25,19 @@ void freeComputationTree(Value *root);
 
 // For debugging
 void printn(Neuron* neuron);
+
+typedef struct {
+	char name[6]; // For debugging
+	int num_of_neurons, dim_of_neurons;
+	Neuron** neurons;
+} Layer;
+
+// Creating a layer with given lengths of input and output, and name
+Layer* createLayer(int num_of_inputs, int num_of_outputs, char* name);
+
+// Evaluate layer for a given set of inputs
+Value** evaluateLayer(Layer* layer, Value** inputs);
+
+// For debugging
+void printl(Layer* layer);
 #endif

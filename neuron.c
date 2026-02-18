@@ -54,8 +54,38 @@ void freeComputationTree(Value *root){
 
 void printn(Neuron* n){
 	printf("-------------------\n");
-	printf("node name: %s\n", n->name);
+	printf("neuron name: %s\n", n->name);
 	printf("dimension: %d\n", n->dimension);
 	printf("bias: %f\n", n->bias->data);
+	printf("-------------------\n");
+}
+
+Layer* createLayer(int num_of_inputs, int num_of_outputs, char* n){
+	Layer* layer = malloc(sizeof(Layer));
+	strncpy(layer->name, n, 4);      
+	layer->name[5] = '\0';
+	layer->num_of_neurons = num_of_outputs;
+	layer->dim_of_neurons = num_of_inputs;
+	layer->neurons = malloc(sizeof(Neuron*) * num_of_outputs);
+
+	for(int i=0; i<num_of_outputs; i++){
+		layer->neurons[i] = createNeuron(num_of_inputs, "n");
+		snprintf(layer->neurons[i]->name, sizeof(layer->neurons[i]->name), "n%d", i);
+	}
+	return layer;
+}
+
+Value** evaluateLayer(Layer* layer, Value** inputs){
+	Value** output = malloc(sizeof(Value*) * layer->num_of_neurons);
+	for(int i=0; i<layer->num_of_neurons; i++){
+		output[i] = evaluateNeuron(layer->neurons[i], inputs);
+	}
+	return output;
+}
+
+void printl(Layer* layer){
+	printf("-------------------\n");  
+	printf("layer name: %s\n", layer->name);
+	printf("%d neurons, \neach taking %d inputs\n", layer->num_of_neurons, layer->dim_of_neurons);
 	printf("-------------------\n");
 }
