@@ -89,3 +89,37 @@ void printl(Layer* layer){
 	printf("%d neurons, \neach taking %d inputs\n", layer->num_of_neurons, layer->dim_of_neurons);
 	printf("-------------------\n");
 }
+
+MLP* createMLP(int num_of_ips, int num_of_layers, int* num_of_ops, char* n){
+	MLP *mlp = malloc(sizeof(MLP));
+	strncpy(mlp->name, n, 4);                                                        
+	mlp->name[5] = '\0';
+	mlp->num_of_inputs = num_of_ips;
+	mlp->num_of_layers = num_of_layers;
+	mlp->layers = malloc(sizeof(Layer*) * num_of_layers);
+	int ips = num_of_ips;
+	for(int i=0; i<num_of_layers; i++){
+		mlp->layers[i] = createLayer(ips, num_of_ops[i], "l");
+		snprintf(mlp->layers[i]->name, sizeof(mlp->layers[i]->name), "l%d", i);
+		ips = num_of_ops[i];
+	
+	}
+	mlp->num_of_outputs = ips;
+	return mlp;
+}
+
+Value** evaluateMLP(MLP* mlp, Value** inputs){
+	Value** ips = inputs;
+	for(int i=0; i<mlp->num_of_layers; i++){
+		ips = evaluateLayer(mlp->layers[i], ips);
+	}
+	return ips;
+} 
+
+void printmlp(MLP* mlp){
+	printf("-------------------\n"); 
+	printf("MLP name: %s\n", mlp->name);
+	printf("%d layers\n", mlp->num_of_layers);
+	printf("%d inputs\n%d outputs\n", mlp->num_of_inputs, mlp->num_of_outputs);
+	printf("-------------------\n");
+}

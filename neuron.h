@@ -40,4 +40,16 @@ Value** evaluateLayer(Layer* layer, Value** inputs);
 
 // For debugging
 void printl(Layer* layer);
+
+typedef struct {
+	char name[6];
+	Layer** layers;
+	int num_of_outputs;	
+	int num_of_inputs, num_of_layers;
+} MLP;
+
+MLP* createMLP(int num_of_inputs, int num_of_layers, int *num_of_outs, char* name);
+Value** evaluateMLP(MLP* mlp, Value** inputs);
+void printmlp(MLP* mlp);
+
 #endif
