@@ -57,6 +57,8 @@ void printn(Neuron* n){
 	printf("neuron name: %s\n", n->name);
 	printf("dimension: %d\n", n->dimension);
 	printf("bias: %f\n", n->bias->data);
+	for(int i=0; i<n->dimension; i++)
+		printv(n->weights[i]);
 	printf("-------------------\n");
 }
 
@@ -87,6 +89,8 @@ void printl(Layer* layer){
 	printf("-------------------\n");  
 	printf("layer name: %s\n", layer->name);
 	printf("%d neurons, \neach taking %d inputs\n", layer->num_of_neurons, layer->dim_of_neurons);
+	for(int i=0; i<layer->num_of_neurons; i++)
+		printn(layer->neurons[i]);
 	printf("-------------------\n");
 }
 
@@ -121,5 +125,7 @@ void printmlp(MLP* mlp){
 	printf("MLP name: %s\n", mlp->name);
 	printf("%d layers\n", mlp->num_of_layers);
 	printf("%d inputs\n%d outputs\n", mlp->num_of_inputs, mlp->num_of_outputs);
+	for(int i=0; i<mlp->num_of_layers; i++)
+		printl(mlp->layers[i]);
 	printf("-------------------\n");
 }

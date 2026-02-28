@@ -13,12 +13,14 @@ int main(){
 	Value** z = evaluateMLP(mlp, x);
 	printmlp(mlp);
 	Layer* layer; Neuron* neuron;
+	/*
 	for(int i=0; i<mlp->num_of_layers; i++)
 	{
 		layer = mlp->layers[i];
 		printf("\nLayer number %s\n", layer->name);
 		for(int j=0; j<layer->num_of_neurons; j++){
 			neuron = layer->neurons[j];
+			printn(neuron);
 			printf("\nNeuron %s\n", neuron->name);
 			for(int k=0; k<neuron->dimension; k++){
 				printv(neuron->weights[k]);
@@ -26,6 +28,7 @@ int main(){
 			printv(neuron->bias);
 		}
 	}
+	*/
 	printf("\nInputs:\n");
 	printv(x[0]);
 	printv(x[1]);	
