@@ -44,6 +44,7 @@ Value* createNewValue(float data, char* name);
 
 // Operations on value
 Value* add(Value* x, Value* y);
+Value* sub(Value* x, Value* y);
 Value* mul(Value* x, Value* y);
 Value* vtanh(Value* x);
 
@@ -52,6 +53,7 @@ void printv(Value* x);
 
 // For back-propagation
 void addBack(Value* x);
+void subBack(Value* x);
 void mulBack(Value* x);
 void tanhBack(Value* x);
 void doNothing(Value* x);

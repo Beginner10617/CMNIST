@@ -33,6 +33,18 @@ Value* add(Value *x, Value *y){
 	return z;
 }
 
+Value* sub(Value *x, Value *y){
+	Value *z = malloc(sizeof(Value));
+	z->data = x->data - y->data;
+	z->_prev[0] = x;
+	z->_prev[1] = y;
+	z->grad = 0.0f;
+	z->op = '-';
+	z->_backward = subBack;
+	z->_isparameter = 0;
+	return z;
+}
+
 void addBack(Value *z){
 	Value *x = z->_prev[0];
 	Value *y = z->_prev[1];
@@ -40,6 +52,12 @@ void addBack(Value *z){
 	y->grad += z->grad;
 }
 
+void subBack(Value* z){
+	Value *x = z->_prev[0];
+	Value *y = z->_prev[1];
+	x->grad += z->grad;
+	y->grad -= z->grad;
+}
 
 Value* mul(Value *x, Value *y){
 	Value *z = malloc(sizeof(Value));

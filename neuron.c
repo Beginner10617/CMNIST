@@ -2,7 +2,7 @@
 
 // helper function
 float randomFloat() {
-    return (float)rand() / (float)RAND_MAX;
+    return ((double)rand() / RAND_MAX - 0.5f) * 0.1f;
 }
 
 Neuron* createNeuron(int dim, char* n){
@@ -18,7 +18,7 @@ Neuron* createNeuron(int dim, char* n){
 				"w");
 		snprintf(neuron->weights[i]->name, sizeof(neuron->weights[i]->name), "w%d", i);
 		neuron->weights[i]->_isparameter = 1; // Useful when freeing the computaion graph
-		printf("neuron weight %s = %f created\n", neuron->weights[i]->name, neuron->weights[i]->data);
+		//printf("neuron weight %s = %f created\n", neuron->weights[i]->name, neuron->weights[i]->data);
 	}
 	neuron->bias = createNewValue(randomFloat(), "b");
 	neuron->bias->_isparameter = 1;
@@ -31,7 +31,7 @@ Value* evaluateNeuron(Neuron *neuron, Value **inputs){
 	int dim = neuron->dimension;
         for(int i=0; i<dim; i++){
 	if(inputs[i]==NULL){
-		printf("Input dimension must match neuron\n");
+		//printf("Input dimension must match neuron\n");
 		exit(1);
 	}
 	Value* wixi = mul(neuron->weights[i], inputs[i]);
@@ -46,7 +46,7 @@ void freeComputationTree(Value *root){
 	buildTopoSort(nodelist, root);
 	for(int i=nodelist->size-1; i>=0; i--){
 		if(nodelist->values[i]->_isparameter > 0) continue;
-		printf("Removing %s = Value(%f)\n", nodelist->values[i]->name, nodelist->values[i]->data);   
+		//printf("Removing %s = Value(%f)\n", nodelist->values[i]->name, nodelist->values[i]->data);   
 		free(nodelist->values[i]);	
 	}
 	freeNodeList(nodelist);

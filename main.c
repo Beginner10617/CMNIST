@@ -5,37 +5,57 @@
 
 int main(){
 	srand((unsigned int)time(NULL));
-	Value **x = malloc( 2 * sizeof(Value*));
-	x[0] = createNewValue(2, "x1"); x[0]->_isparameter=1;
-	x[1] = createNewValue(1, "x2"); x[1]->_isparameter=1;
-	int outs[3] = {2,2,1};
-	MLP* mlp = createMLP(2, 3, outs, "MLP");	
-	Value** z = evaluateMLP(mlp, x);
-	printmlp(mlp);
-	Layer* layer; Neuron* neuron;
-	/*
-	for(int i=0; i<mlp->num_of_layers; i++)
-	{
-		layer = mlp->layers[i];
-		printf("\nLayer number %s\n", layer->name);
-		for(int j=0; j<layer->num_of_neurons; j++){
-			neuron = layer->neurons[j];
-			printn(neuron);
-			printf("\nNeuron %s\n", neuron->name);
-			for(int k=0; k<neuron->dimension; k++){
-				printv(neuron->weights[k]);
-			}
-			printv(neuron->bias);
+	int outs[3] = {4,4,1};
+	MLP* mlp = createMLP(3, 3, outs, "MLP");	
+	
+	Value** testInputs; Value** testOutputs;
+	
+	float values[] = {
+		2.0f, 3.0f,-1.0f,
+		3.0f,-1.0f, 0.5f,
+	        0.5f, 1.0f, 1.0f,
+		1.0f, 1.0f,-1.0f	
+	};
+	float gts[] = {1.0f,-1.0f,-1.0f, 1.0f};
+	
+	testInputs = malloc(sizeof(Value*) * 12);
+	testOutputs= malloc(sizeof(Value*) * 4);
+
+	for(int i=0; i<12; i++){
+		testInputs[i] = createNewValue(values[i], "x  ");
+		snprintf(testInputs[i]->name, sizeof(testInputs[i]->name), "x%d%d", i/3,i%3);
+		testInputs[i]->_isparameter = 1;
+		if(i%3==0){
+			testOutputs[i/3] = createNewValue(gts[i/3], "y ");
+			snprintf(testOutputs[i/3]->name, sizeof(testOutputs[i]->name), "y%d", i/3);
+			testOutputs[i/3]->_isparameter = 1;
 		}
 	}
-	*/
-	printf("\nInputs:\n");
-	printv(x[0]);
-	printv(x[1]);	
+	
+	Value*** ypred = malloc(sizeof(Value**) * 4);
+	Value** dely = malloc(sizeof(Value*) * 4);
+	Value** sqdely = malloc(sizeof(Value*) * 4);
+	Value* loss; float step = 0.05f;
+	int ctrl = 0;
+	while(ctrl != 1){
+		printf("------------------\n");
+		printf("ypred\t\tygt\t\tdely\n");
+		for(int i=0; i<4; i++){
+			ypred[i] = evaluateMLP(mlp, testInputs + 3*i);
+			dely[i] = sub(testOutputs[i], ypred[i][0]);
+			sqdely[i] = mul(dely[i], dely[i]);
+			printf("%f\t%f\t%f\n", ypred[i][0]->data, 
+					testOutputs[i]->data, dely[i]->data);
+		}
+		loss = add( add(sqdely[0], sqdely[1]) , add(sqdely[2], sqdely[3]) );
+		printf("loss = %f\n", loss->data);
+		backPropagate(loss);
+		freeComputationTree(loss);
+		gradientDescentMLP(mlp, step);
+		printf("press 1 to exit ");
+		scanf("%d", &ctrl);
+	}
+	
 
-	printf("\nOutput:\n");
-	printv(z[0]);
-	printf("\n");
-	freeComputationTree(z[0]);
 	return 0;
 }
