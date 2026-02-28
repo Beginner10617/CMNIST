@@ -62,6 +62,22 @@ void printn(Neuron* n){
 	printf("-------------------\n");
 }
 
+void gradientDescentNeuron(Neuron* neuron, float stepSize){
+	for(int i=0; i<neuron->dimension; i++)
+		gradientDescentValue(neuron->weights[i], stepSize);
+	gradientDescentValue(neuron->bias, stepSize);
+}
+
+void gradientDescentLayer(Layer* layer, float stepSize){
+	for(int i=0; i<layer->num_of_neurons; i++)
+		gradientDescentNeuron(layer->neurons[i], stepSize);
+}
+
+void gradientDescentMLP(MLP* mlp, float stepSize){
+	for(int i=0; i<mlp->num_of_layers; i++)
+		gradientDescentLayer(mlp->layers[i], stepSize);
+}
+
 Layer* createLayer(int num_of_inputs, int num_of_outputs, char* n){
 	Layer* layer = malloc(sizeof(Layer));
 	strncpy(layer->name, n, 4);      

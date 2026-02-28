@@ -26,6 +26,8 @@ void freeComputationTree(Value *root);
 // For debugging
 void printn(Neuron* neuron);
 
+void gradientDescentNeuron(Neuron* neuron, float stepSize);
+
 typedef struct {
 	char name[6]; // For debugging
 	int num_of_neurons, dim_of_neurons;
@@ -40,6 +42,8 @@ Value** evaluateLayer(Layer* layer, Value** inputs);
 
 // For debugging
 void printl(Layer* layer);
+
+void gradientDescentLayer(Layer* layer, float stepSize);
 
 typedef struct {
 	char name[6]; // For debugging
@@ -56,5 +60,7 @@ Value** evaluateMLP(MLP* mlp, Value** inputs);
 
 // For debugging
 void printmlp(MLP* mlp);
+
+void gradientDescentMLP(MLP* mlp, float stepSize);
 
 #endif

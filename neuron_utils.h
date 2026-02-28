@@ -59,4 +59,7 @@ void doNothing(Value* x);
 // Back-propagation with given value as the root
 void backPropagate(Value* x);
 
+// Update data and reset grad = 0 
+void gradientDescentValue(Value* v, float stepSize);
+
 #endif

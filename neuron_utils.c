@@ -141,3 +141,8 @@ void resetVisited(NodeList* topo) {
     for (int i = 0; i < topo->size; i++)
         topo->values[i]->visited = 0;
 }
+
+void gradientDescentValue(Value* v, float stepSize){
+	v->data -= stepSize * v->grad;
+	v->grad = 0.0f;
+}
