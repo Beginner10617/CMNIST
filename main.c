@@ -2,6 +2,7 @@
 #include "string.h"
 #include "stdio.h"
 #include "time.h"
+#include "fileSystem.h"
 
 int main(){
 	srand((unsigned int)time(NULL));
@@ -55,7 +56,10 @@ int main(){
 		printf("press 1 to exit ");
 		scanf("%d", &ctrl);
 	}
-	
-
+	printf("-----------------------\n\n\n\n");
+	printmlp(mlp);
+	printf("\n\n\n\n");
+	saveMLP(mlp, "model.txt");	
+	printf("File saved\n");
 	return 0;
 }
