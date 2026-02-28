@@ -33,7 +33,7 @@ MLP* loadMLP(char* Fname){
 	file = fopen(Fname, "r");
 	if(file == NULL){
 		printf("Error opening file %s\n", Fname);
-		exit(1);
+		return NULL;	
 	}
 	MLP* mlp = malloc(sizeof(MLP));
 
