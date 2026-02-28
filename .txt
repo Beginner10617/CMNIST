@@ -1,3 +1,2 @@
-Loading/Saving MLP from a custom binary file format
 Controlled TrainingLoop()
 A Test() function to test the MLP

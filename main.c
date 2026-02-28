@@ -6,9 +6,9 @@
 
 int main(){
 	srand((unsigned int)time(NULL));
-	int outs[3] = {4,4,1};
-	MLP* mlp = createMLP(3, 3, outs, "MLP");	
-	
+	printf("Reading from the file...\n");
+	MLP* mlp = loadMLP("model.txt");
+	printf("read from the file successfully!\n");	
 	Value** testInputs; Value** testOutputs;
 	
 	float values[] = {
