@@ -8,17 +8,28 @@ void saveMLP(MLP* mlp, char* Fname){
 		printf("Error opening file %s\n", Fname);
 		exit(1);
 	}
+	
 	fprintf(file, "%s\n", mlp->name);
+	
 	fprintf(file, "%d\n%d\n%d\n",mlp->num_of_outputs,
 		mlp->num_of_inputs, mlp->num_of_layers);
+
 	for(int i=0; i<mlp->num_of_layers; i++){
 		fprintf(file, "%s\n", mlp->layers[i]->name);
-		fprintf(file, "%d\n%d\n", mlp->layers[i]->num_of_neurons,
-				mlp->layers[i]->dim_of_neurons);
+
+		fprintf(file, "%d\n%d\n%d\n", 
+				mlp->layers[i]->num_of_neurons,
+				mlp->layers[i]->dim_of_neurons,
+				mlp->actfunc[i]);
+
 		for(int j=0; j<mlp->layers[i]->num_of_neurons; j++){
+	
 			fprintf(file, "%s\n", mlp->layers[i]->neurons[j]->name);
+	
 			fprintf(file, "%d\n", mlp->layers[i]->neurons[j]->dimension);
+	
 			fprintf(file, "%f\n", mlp->layers[i]->neurons[j]->bias->data);
+	
 			for(int k=0; k<mlp->layers[i]->neurons[j]->dimension; k++){
 				fprintf(file, "%f\n", mlp->layers[i]->neurons[j]->weights[k]->data);
 			}
@@ -42,13 +53,15 @@ MLP* loadMLP(char* Fname){
 		
 	fgets(line, sizeof(line), file);
 	mlp->num_of_outputs = atoi(line);
+	
 	fgets(line, sizeof(line), file);
 	mlp->num_of_inputs = atoi(line);
+	
 	fgets(line, sizeof(line), file);
 	mlp->num_of_layers = atoi(line);
 
 	mlp->layers = malloc(sizeof(Layer*) * mlp->num_of_layers);
-
+	mlp->actfunc= malloc(sizeof(int) * mlp->num_of_layers);
 	for(int i=0; i<mlp->num_of_layers; i++){
 		mlp->layers[i] = malloc(sizeof(Layer));
 		fgets(mlp->layers[i]->name, sizeof(mlp->layers[i]->name), file);
@@ -58,6 +71,8 @@ MLP* loadMLP(char* Fname){
 		mlp->layers[i]->num_of_neurons = atoi(line);
 		fgets(line, sizeof(line), file);
 		mlp->layers[i]->dim_of_neurons = atoi(line);
+		fgets(line, sizeof(line), file);
+		mlp->actfunc[i] = atoi(line);
 
 		mlp->layers[i]->neurons = malloc(
 		sizeof(Neuron*) * mlp->layers[i]->num_of_neurons);

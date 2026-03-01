@@ -79,7 +79,7 @@ void train(int iterations, float stepSize){
 	int outputs[] = {32,16,10};
 	if(mlp==NULL){
 		printf("model not found, creating new...\n");
-		mlp = createMLP(image_size, 3, outputs, "ADAM");
+		mlp = createMLP(image_size, 3, outputs, tanh, "ADAM");
 	}
 //	int xyzasd;
 //	printmlp(mlp);
@@ -98,13 +98,20 @@ void train(int iterations, float stepSize){
 
 	// training
 for(int iter = 0; iter<iterations; iter++){
-	for(int j=0; j < num_of_batches; j++){	
+	printf("iter=%d\n", iter);
+	for(int j=0; j < num_of_batches; j++){
+		printf("j=%d\n", j);	
 		int off = j * batch_size;
 		for(int ipt=0; ipt < batch_size && ipt + off < imgheader[1]; ipt++){
-			ypred[ipt] = evaluateMLP(mlp, img_inputs[ipt + off], tanh);
+			printf("ipt=%d\noff=%d\nbatch size=%d\n", ipt, off, batch_size);
+			ypred[ipt] = evaluateMLP(mlp, img_inputs[ipt + off]);
+			printf("1");
 			dely[ipt] = subValueArr(ground_truth[ipt + off], ypred[ipt], 10);
+			printf("2");
 			sqdely[ipt] = sqValueArr(dely[ipt], 10);
-			devn[ipt] = sum(sqdely[ipt], 10);   
+			printf("3");
+			devn[ipt] = sum(sqdely[ipt], 10);
+		     	printf("4\n");	
 		}
 			
 		loss = sum(devn, batch_size);
