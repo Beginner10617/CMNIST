@@ -51,7 +51,7 @@ int main(){
 	int image_size = imgheader[2] * imgheader[3];
 	uint8_t label = 0;
 	uint8_t image[image_size];
-	int x=0, y=0, z;
+	int x=0, y=0, z; int total=0, corr=0;
 	Value** imageVal; Value** expecOp; Value** ypred;
 
 	while(readNextImage(image, image_size, fptrimg)){
@@ -62,36 +62,23 @@ int main(){
 			break;
 		}
 
-		for(int a=0; a<imgheader[2]; a++){
-			for(int b=0; b<imgheader[3]; b++){
-				if(image[b+a*imgheader[2]]>0)
-					printf("@");
-				else
-					printf(" ");
-			}
-			printf("\n");
-		}
-
 		expecOp = labelToValueArray(label);
 		ypred = evaluateMLP(mlp, imageVal);
 		float min = -1.0f;
 		for(int abc=0; abc<10; abc++){
-			printf("%d : %f\n", abc, ypred[abc]->data);
 			if(ypred[abc]->data > min){
 				min = ypred[abc]->data;
 				z = abc;
 			}
 		}
-		printf("\n");
-
-		printf("Label: %u\nOutput: %d", label, z);
-		scanf("Press 0 to exit "); scanf("%d", &y);
-		if(y==0) break;
+		if(z==label)corr++;
+		total++;
 
 		x++;
 		if(x >= imgheader[1]) break;
 	}
-	printf("%d images read succedfully\n", x);
+	printf("%d images read succedfully\n%d correct outputs, %.2f%% accuracy\n", 
+			x, corr, corr * 100.0f / total);
     	fclose(fptrimg);
 	fclose(fptrlabel);
 	return 0;

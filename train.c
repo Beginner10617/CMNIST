@@ -124,13 +124,12 @@ for(int iter = 0; iter<iterations; iter++){
 				printf(" ");
 		}
 
-		printf("] %d/%d loss = %f", j+1, num_of_batches, currLoss);
+		printf("] iteration %d/%d batch %d/%d loss = %f", iter+1, 
+			iterations, j+1, num_of_batches, currLoss);
 		fflush(stdout);
-		saveMLP(mlp, "model.txt"); //scanf("%d", &asd);
 	}
-	printf("\n");
 	saveMLP(mlp, "model.txt");
-	printf("saved model!\n");
+	printf(" saved model!\n");
 }
 }
 
