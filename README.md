@@ -42,7 +42,9 @@ Each `Value`node contains:
 - operation metadata
 - `visited` flag for graph traversal
 - `_isparameter` for handling memory allocation
+  
 Backward pass is performed by recursive graph traversal. 
+
 Upon completion of a backward pass, memory allocated to non-paremeter value nodes that are generated during forward pass needs to be freed using `freeComputationTree()`
 
 ---
