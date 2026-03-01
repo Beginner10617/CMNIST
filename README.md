@@ -33,7 +33,7 @@ Current accuracy on the test sample is ~95.10%
 - Performs manual endianness conversion
 - Allocates memory dynamically for images and labels
 
-**Autograd Engine**
+**Autograd Engine** <br>
 Each `Value`node contains:
 - `data`
 - `grad`
