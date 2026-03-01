@@ -33,6 +33,15 @@ Value* add(Value *x, Value *y){
 	return z;
 }
 
+Value* sum(Value** x, int sz){
+	if(sz==0) return NULL;
+	Value* z = x[0];
+	for(int i=1; i<sz; i++){
+		z = add(x[i], z);
+	}
+	return z;
+}
+
 Value* sub(Value *x, Value *y){
 	Value *z = malloc(sizeof(Value));
 	z->data = x->data - y->data;
@@ -164,3 +173,25 @@ void gradientDescentValue(Value* v, float stepSize){
 	v->data -= stepSize * v->grad;
 	v->grad = 0.0f;
 }
+
+Value** addValueArr(Value** x, Value** y, int sz){
+	Value** z = malloc(sizeof(Value*) * sz);
+	for(int i=0; i<sz; i++)
+		z[i] = add(x[i], y[i]);
+	return z;
+}
+
+Value** subValueArr(Value** x, Value** y, int sz){
+	Value** z = malloc(sizeof(Value*) * sz);
+	for(int i=0; i<sz; i++)
+		z[i] = sub(x[i], y[i]);
+	return z;
+}
+
+Value** sqValueArr(Value** x, int sz){
+	Value** z = malloc(sizeof(Value*) * sz);
+	for(int i=0; i<sz; i++)
+		z[i] = mul(x[i], x[i]);
+	return z;
+}
+

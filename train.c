@@ -1,24 +1,39 @@
 #include "train_utils.h"
 #include "fileSystem.h"
 #include "time.h"
- #include "stdio.h"
+#include "stdio.h"
 #include "neuron.h"
 
+#define BAR_WIDTH 50 // For progress bar
+
 Value** labelToValueArray(int x){
-	// convert x into an array size 10
-	// having 1.0f at index x, 0.0f elsewhere
-	return NULL;
+	if(x<0 || x>9) return NULL;
+	Value** out = malloc(sizeof(Value*) * 10);
+	for(int i=0; i<10; i++){
+		if(i==x)
+			out[i] = createNewValue(1.0f,"x");
+		else
+			out[i] = createNewValue(0.0f, "x");
+		sprintf(out[i]->name, "%d", i);
+		out[i]->_isparameter = 1;
+	}
+	return out;
 };
 
 Value** imgDataToValueArray(uint8_t *img, int img_sz){
 	// convert image data [0,255] into an array
 	// of same size with values [-1.0f, 1.0f]
 	// Use linear scaling
-	return NULL;
+	Value** out = malloc(sizeof(Value*) * img_sz);
+	for(int i=0; i<img_sz; i++){
+		out[i] = createNewValue(img[i]/127.5f - 1,"x");
+		sprintf(out[i]->name, "%d",i);
+		out[i]->_isparameter = 1;
+	}
+	return out;
 }
 
-void train(){
-	srand((unsigned int)time(NULL));
+void train(int iterations, float stepSize){
 	
 	FILE *fptrimg, *fptrlabel;
 	
@@ -29,11 +44,13 @@ void train(){
     		printf("Error opening file!\n");
 		return ;
 	}
-	
+
+	// loading dataset header
 	uint32_t imgheader[4], labelheader[2];
 	readImgHeader(imgheader, fptrimg);
 	readLabelHeader(labelheader, fptrlabel);
 	
+	// loading data from the dataset
 	int image_size = imgheader[2] * imgheader[3];
 	uint8_t label = 0;
 	Value*** ground_truth = malloc(sizeof(Value**) * labelheader[1]);
@@ -47,29 +64,76 @@ void train(){
 		}
 		
 		if(!readNextImage(image, image_size, fptrimg)) break;
-		// load data to Value ground_truths[i]->{_, _, _, _, _, _, _, _, _, _}, 
+		// load data to Value ground_truth[i]->{_, _, _, _, _, _, _, _, _, _}, 
 		// img_inputs[i] : convert [0,256) -> [-1,1], 
-		
+		ground_truth[i] = labelToValueArray(label);
+		img_inputs[i] = imgDataToValueArray(image, image_size);
 	}
     
+	fclose(fptrimg);
+	fclose(fptrlabel);
+	printf("Image data loaded!\n");
+	printf("Opening MLP...\n");
 	MLP* mlp = loadMLP("model.txt");
+
 	int outputs[] = {128,128,10};
 	if(mlp==NULL){
 		printf("model not found, creating new...\n");
 		mlp = createMLP(image_size, 3, outputs, "ADAM");
 	}
 
-	Value*** ypred = malloc(sizeof(Value**) * labelheader[1]);
-	Value***  dely = malloc(sizeof(Value**) * labelheader[1]);
-	Value*** sqdely= malloc(sizeof(Value**) * labelheader[1]);
+	printf("Allocating memory for training data...\n");
+	
+	int batch_size = 100;
+	Value*** ypred = malloc(sizeof(Value**) * batch_size);
+	Value***  dely = malloc(sizeof(Value**) * batch_size);
+	Value*** sqdely= malloc(sizeof(Value**) * batch_size);
+	Value** devn = malloc(sizeof(Value*) * batch_size);
+	Value* loss; float currLoss;
+	printf("Starting training loop...\n");
+	int num_of_batches = imgheader[1] / batch_size;
 
-		
-	fclose(fptrimg);
-	fclose(fptrlabel);
+	// training
+for(int iter = 0; iter<iterations; iter++){
+	for(int j=0; j < num_of_batches; j++){	
+		int off = j * batch_size;
+		for(int ipt=0; ipt < batch_size && ipt + off < imgheader[1]; ipt++){
+			ypred[ipt] = evaluateMLP(mlp, img_inputs[ipt + off]);
+			dely[ipt] = subValueArr(ground_truth[ipt + off], ypred[ipt], 10);
+			sqdely[ipt] = sqValueArr(dely[ipt], 10);
+			devn[ipt] = sum(sqdely[ipt], 10);   
+		}
+			
+		loss = sum(devn, batch_size);
+		currLoss = loss->data;
+		backPropagate(loss);
+		freeComputationTree(loss);
+		gradientDescentMLP(mlp, stepSize);	
+
+		// Move cursor to beginning of line
+		printf("\r[");	
+		int pos = ((j+1) * BAR_WIDTH) / (num_of_batches);
+
+		for (int i = 0; i < BAR_WIDTH; i++) {
+			if (i < pos)
+				printf("=");
+			else if (i == pos)
+				printf(">");
+			else
+				printf(" ");
+		}
+
+		printf("] %d/%d loss = %f", j, num_of_batches, currLoss);
+		fflush(stdout);
+
+	}
+
+}
 	saveMLP(mlp, "model.txt");
 }
 
 int main(){
-	train();
+	srand((unsigned int)time(NULL));
+	train(100, 0.05f);
 	return 0;
 }

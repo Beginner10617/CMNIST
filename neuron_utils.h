@@ -47,6 +47,10 @@ Value* add(Value* x, Value* y);
 Value* sub(Value* x, Value* y);
 Value* mul(Value* x, Value* y);
 Value* vtanh(Value* x);
+Value* sum(Value** x, int sz);
+Value** addValueArr(Value** x, Value** y, int sz);
+Value** subValueArr(Value** x, Value** y, int sz);
+Value** sqValueArr(Value** x, int sz);
 
 // For debugging
 void printv(Value* x);
