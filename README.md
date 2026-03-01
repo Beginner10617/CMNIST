@@ -1,5 +1,5 @@
 # CMNIST
-A from scratch implementation of *MNIST digit classification in C.*
+A from scratch implementation of **MNIST digit classification in C.**
 
 CMNIST is a minimal deep learning project that implements a Multi-Layer Perceptron (MLP), automatic differentiation, and training loop entirely in C - without using any external ML libraries.
 
@@ -28,12 +28,12 @@ Current accuracy on the test sample is ~95.10%
 
 ---
 ## Implementation Details
-*MNIST Parsing*
+**MNIST Parsing**
 - Reads raw binary IDX format
 - Performs manual endianness conversion
 - Allocates memory dynamically for images and labels
 
-*Autograd Engine*
+**Autograd Engine**
 Each `Value`node contains:
 - `data`
 - `grad`
