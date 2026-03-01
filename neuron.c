@@ -131,13 +131,10 @@ MLP* createMLP(int num_of_ips, int num_of_layers, int* num_of_ops, int* actfunc,
 }
 
 Value** evaluateMLP(MLP* mlp, Value** inputs){
-	printf("inside evaluateMLP\n");
 	Value** ips = inputs;
 	for(int i=0; i<mlp->num_of_layers; i++){
 		ips = evaluateLayer(mlp->layers[i], ips, mlp->actfunc[i]);
 	}
-
-	printf("returning\n");
 	return ips;
 } 
 
