@@ -22,7 +22,7 @@ Value** labelToValueArray(int x){
 
 Value** imgDataToValueArray(uint8_t *img, int img_sz){
 	// convert image data [0,255] into an array
-	// of same size with values [-1.0f, 1.0f]
+	// of same size with values [0.0f, 1.0f]
 	// Use linear scaling
 	Value** out = malloc(sizeof(Value*) * img_sz);
 	for(int i=0; i<img_sz; i++){
@@ -75,30 +75,33 @@ void train(int iterations, float stepSize){
 	printf("Image data loaded!\n");
 	printf("Opening MLP...\n");
 	MLP* mlp = loadMLP("model.txt");
-
-	int outputs[] = {128,128,10};
+	int tanh[] = {1,1,0};
+	int outputs[] = {32,16,10};
 	if(mlp==NULL){
 		printf("model not found, creating new...\n");
 		mlp = createMLP(image_size, 3, outputs, "ADAM");
 	}
-
+//	int xyzasd;
+//	printmlp(mlp);
+//	printf("press 1 to exit : ");
+//	scanf("%d", &xyzasd);
 	printf("Allocating memory for training data...\n");
 	
-	int batch_size = 100;
+	int batch_size = 10;
 	Value*** ypred = malloc(sizeof(Value**) * batch_size);
 	Value***  dely = malloc(sizeof(Value**) * batch_size);
 	Value*** sqdely= malloc(sizeof(Value**) * batch_size);
 	Value** devn = malloc(sizeof(Value*) * batch_size);
 	Value* loss; float currLoss;
 	printf("Starting training loop...\n");
-	int num_of_batches = imgheader[1] / batch_size;
+	int asd, num_of_batches = imgheader[1] / batch_size;
 
 	// training
 for(int iter = 0; iter<iterations; iter++){
 	for(int j=0; j < num_of_batches; j++){	
 		int off = j * batch_size;
 		for(int ipt=0; ipt < batch_size && ipt + off < imgheader[1]; ipt++){
-			ypred[ipt] = evaluateMLP(mlp, img_inputs[ipt + off]);
+			ypred[ipt] = evaluateMLP(mlp, img_inputs[ipt + off], tanh);
 			dely[ipt] = subValueArr(ground_truth[ipt + off], ypred[ipt], 10);
 			sqdely[ipt] = sqValueArr(dely[ipt], 10);
 			devn[ipt] = sum(sqdely[ipt], 10);   
@@ -109,7 +112,8 @@ for(int iter = 0; iter<iterations; iter++){
 		backPropagate(loss);
 		freeComputationTree(loss);
 		gradientDescentMLP(mlp, stepSize);	
-
+		//if(xyzasd == 1)
+		//	exit(1);
 		// Move cursor to beginning of line
 		printf("\r[");	
 		int pos = ((j+1) * BAR_WIDTH) / (num_of_batches);
@@ -123,17 +127,18 @@ for(int iter = 0; iter<iterations; iter++){
 				printf(" ");
 		}
 
-		printf("] %d/%d loss = %f", j, num_of_batches, currLoss);
+		printf("] %d/%d loss = %f", j+1, num_of_batches, currLoss);
 		fflush(stdout);
-
+		saveMLP(mlp, "model.txt"); //scanf("%d", &asd);
 	}
-
-}
+	printf("\n");
 	saveMLP(mlp, "model.txt");
+	printf("saved model!\n");
+}
 }
 
 int main(){
 	srand((unsigned int)time(NULL));
-	train(100, 0.05f);
+	train(10, 0.005f);
 	return 0;
 }

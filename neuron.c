@@ -2,7 +2,7 @@
 
 // helper function
 float randomFloat() {
-    return ((double)rand() / RAND_MAX - 0.5f) * 0.1f;
+    return ((double)rand() / RAND_MAX - 0.5f) * 0.05f;
 }
 
 Neuron* createNeuron(int dim, char* n){
@@ -25,20 +25,21 @@ Neuron* createNeuron(int dim, char* n){
 	return neuron;
 }
 
-Value* evaluateNeuron(Neuron *neuron, Value **inputs){
+Value* evaluateNeuron(Neuron *neuron, Value **inputs, int tanh){
 
 	Value* raw_act = neuron->bias;
 	int dim = neuron->dimension;
         for(int i=0; i<dim; i++){
-	if(inputs[i]==NULL){
-		//printf("Input dimension must match neuron\n");
-		exit(1);
-	}
-	Value* wixi = mul(neuron->weights[i], inputs[i]);
-        raw_act = add(raw_act, wixi);
-    }
-
-    return vtanh(raw_act);
+		if(inputs[i]==NULL){
+			//printf("Input dimension must match neuron\n");
+			exit(1);
+		}
+		Value* wixi = mul(neuron->weights[i], inputs[i]);
+        	raw_act = add(raw_act, wixi);
+    	}
+	if(tanh)
+		return vtanh(raw_act);
+	return raw_act;
 }
 
 void freeComputationTree(Value *root){
@@ -93,10 +94,10 @@ Layer* createLayer(int num_of_inputs, int num_of_outputs, char* n){
 	return layer;
 }
 
-Value** evaluateLayer(Layer* layer, Value** inputs){
+Value** evaluateLayer(Layer* layer, Value** inputs, int tanh){
 	Value** output = malloc(sizeof(Value*) * layer->num_of_neurons);
 	for(int i=0; i<layer->num_of_neurons; i++){
-		output[i] = evaluateNeuron(layer->neurons[i], inputs);
+		output[i] = evaluateNeuron(layer->neurons[i], inputs, tanh);
 	}
 	return output;
 }
@@ -128,10 +129,10 @@ MLP* createMLP(int num_of_ips, int num_of_layers, int* num_of_ops, char* n){
 	return mlp;
 }
 
-Value** evaluateMLP(MLP* mlp, Value** inputs){
+Value** evaluateMLP(MLP* mlp, Value** inputs, int* tanh){
 	Value** ips = inputs;
 	for(int i=0; i<mlp->num_of_layers; i++){
-		ips = evaluateLayer(mlp->layers[i], ips);
+		ips = evaluateLayer(mlp->layers[i], ips, tanh[i]);
 	}
 	return ips;
 } 

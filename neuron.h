@@ -18,7 +18,7 @@ typedef struct {
 Neuron* createNeuron(int dim, char* name);
 
 // Evaluating neuron activation value for given inputs
-Value* evaluateNeuron(Neuron* neuron, Value** inputs);
+Value* evaluateNeuron(Neuron* neuron, Value** inputs, int tanh);
 
 // Freeing allocated memory after backpropagation of non-parameter nodes
 void freeComputationTree(Value *root);
@@ -38,7 +38,7 @@ typedef struct {
 Layer* createLayer(int num_of_inputs, int num_of_outputs, char* name);
 
 // Evaluate layer for a given set of inputs
-Value** evaluateLayer(Layer* layer, Value** inputs);
+Value** evaluateLayer(Layer* layer, Value** inputs, int tanh);
 
 // For debugging
 void printl(Layer* layer);
@@ -56,7 +56,7 @@ typedef struct {
 MLP* createMLP(int num_of_inputs, int num_of_layers, int *num_of_outs, char* name);
 
 // Evaluate the entire MLP layer-by-layer on a given set of inputs
-Value** evaluateMLP(MLP* mlp, Value** inputs);
+Value** evaluateMLP(MLP* mlp, Value** inputs, int* tanh);
 
 // For debugging
 void printmlp(MLP* mlp);
