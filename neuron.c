@@ -37,7 +37,7 @@ Value* evaluateNeuron(Neuron *neuron, Value **inputs, int tanh){
 		Value* wixi = mul(neuron->weights[i], inputs[i]);
         	raw_act = add(raw_act, wixi);
     	}
-	if(tanh)
+	if(tanh) // Implement other activation functions here (maybe in future)
 		return vtanh(raw_act);
 	return raw_act;
 }
