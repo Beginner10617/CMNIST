@@ -39,6 +39,7 @@ Each `Value`node contains:
 - `grad`
 - `_prev` (dependencies)
 - `_backward` function pointer
+- `name` for debugging
 - operation metadata
 - `visited` flag for graph traversal
 - `_isparameter` for handling memory allocation
