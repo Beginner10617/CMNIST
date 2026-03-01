@@ -81,10 +81,7 @@ void train(int iterations, float stepSize){
 		printf("model not found, creating new...\n");
 		mlp = createMLP(image_size, 3, outputs, tanh, "ADAM");
 	}
-//	int xyzasd;
-//	printmlp(mlp);
-//	printf("press 1 to exit : ");
-//	scanf("%d", &xyzasd);
+	
 	printf("Allocating memory for training data...\n");
 	
 	int batch_size = 10;
@@ -92,7 +89,8 @@ void train(int iterations, float stepSize){
 	Value***  dely = malloc(sizeof(Value**) * batch_size);
 	Value*** sqdely= malloc(sizeof(Value**) * batch_size);
 	Value** devn = malloc(sizeof(Value*) * batch_size);
-	Value* loss; float currLoss;
+	Value* losssum; float currLoss;
+	
 	printf("Starting training loop...\n");
 	int asd, num_of_batches = imgheader[1] / batch_size;
 
@@ -107,14 +105,13 @@ for(int iter = 0; iter<iterations; iter++){
 			devn[ipt] = sum(sqdely[ipt], 10);
 		}
 			
-		loss = sum(devn, batch_size);
-		currLoss = loss->data;
-		backPropagate(loss);
-		freeComputationTree(loss);
-		gradientDescentMLP(mlp, stepSize);	
-		//if(xyzasd == 1)
-		//	exit(1);
-		// Move cursor to beginning of line
+		losssum = sum(devn, batch_size);
+		currLoss = losssum->data;
+		backPropagate(losssum);
+		freeComputationTree(losssum);
+		gradientDescentMLP(mlp, stepSize);
+		
+		// progress bar
 		printf("\r[");	
 		int pos = ((j+1) * BAR_WIDTH) / (num_of_batches);
 
