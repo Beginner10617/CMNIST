@@ -56,5 +56,5 @@ Upon completion of a backward pass, memory allocated to non-paremeter value node
 
 ---
 ## Inspiration
-- After watching [this video](https://youtu.be/JDoDWBpz7E8) by [bigboxSWE](https://youtube.com/@bigboxswe) I picked this project - usually implemented in python - and instead do it in C
+- After watching [this video](https://youtu.be/JDoDWBpz7E8) by [bigboxSWE](https://youtube.com/@bigboxswe) I picked this project - usually implemented in python - instead doing it in C
 - Andrej Karpathy's intro to neural networks [youtube video](https://youtu.be/VMj-3S1tku0)
