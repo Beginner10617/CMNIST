@@ -24,7 +24,7 @@ The first two layers have hyperbolic tangent (tanh) as the activation function, 
 
 Loss: Sum of squared deviations of each sample in a batch are taken as loss. Apparently adding scaling based on batch size to implement "mean" squared error caused explosion in loss.
 
-Current accuracy on the test sample is ~95.10%
+Current accuracy on the test sample is ~95.12%
 
 ---
 ## Implementation Details
