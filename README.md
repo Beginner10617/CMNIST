@@ -27,6 +27,20 @@ Loss: Sum of squared deviations of each sample in a batch are taken as loss. App
 Current accuracy on the test sample is ~95.12%
 
 ---
+## Compile instructions
+For training executable, run the following:
+```
+gcc train.c train_utils.c fileSystem.c neuron.c neuron_utils.c -o train
+./train
+```
+
+For testing executable, run the following:
+```
+gcc main.c train_utils.c fileSystem.c neuron.c neuron_utils.c -o test
+./test
+```
+
+---
 ## Implementation Details
 **MNIST Parsing**
 - Reads raw binary IDX format
